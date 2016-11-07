@@ -21,7 +21,6 @@ public class Main {
 	private static void prn(String st){
 		System.out.println(st);
 	}
-
 	private static void pr(String st){
 		System.out.print(st);
 	}
