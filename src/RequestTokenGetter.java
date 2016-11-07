@@ -9,21 +9,33 @@ import Decoder.BASE64Encoder;
 
 public class RequestTokenGetter {
 
-	public static void main(String[] args) throws Exception {
+	// OAuthにおいて利用する変数宣言
+	private String consumerkey;
+	private String consumerSecret;
+	private String clip;
+	private String shopID;
+	private String urlStr;
+	private String country;
+	
+	// 使用するAPIのURL
+	private String tagetURL = "https://previews.7digital.com/clip/";
 
-		// clip number 楽曲のID
-		String clip = "52105287";
-		// 使用するAPIのURL
-		String tagetURL = "https://previews.7digital.com/clip/";
+	private String oauthToken = ""; // リクエストトークン取得時は利用しない
+	private String oauthTokenSecret = ""; // リクエストトークン取得時は利用しない
+	private String method = "GET";
 
-		// OAuthにおいて利用する変数宣言
-		String consumerkey = "7dafk5tnpnw2";
-		String consumerSecret = "a9hbe8rknw6wrdn4";
-		String oauthToken = ""; // リクエストトークン取得時は利用しない
-		String oauthTokenSecret = ""; // リクエストトークン取得時は利用しない
-		String method = "GET";
-		String urlStr = tagetURL + clip ;
-		String shopID = "496";
+	public RequestTokenGetter(String key, String secret, String country, String clipNum, String shopid) {
+		this.clip = clipNum;
+		this.consumerkey = key;
+		this.consumerSecret = secret;
+		this.shopID = shopid;
+		this.country = country;
+		this.urlStr = tagetURL + clip;
+	}
+
+
+
+	public String getClipUrl() throws Exception {
 
 		// OAuthにおいて利用する共通パラメーター
 		// パラメーターはソートする必要があるためSortedMapを利用
@@ -68,7 +80,7 @@ public class RequestTokenGetter {
 
 			// 署名をパラメータに追加
 			params.put("oauth_signature", signature);
-			
+
 
 		}
 
@@ -83,9 +95,8 @@ public class RequestTokenGetter {
 				paramStr += param.getKey() + "=" + urlEncode(param.getValue());
 			}
 		}
-		System.out.println(paramStr);
-		
 
+		return paramStr;
 	}
 
 	private static int getUnixTime() {
