@@ -13,11 +13,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XmlReader{
-	protected Document doc;
+	protected Document doc=null;
 	protected int tab;
+	private String pretrackid=null;
 	private String trackid=null;
 	private boolean compcheck=false;
-	
+
 	public XmlReader(String filename){
 		try{
 			DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
@@ -31,61 +32,33 @@ public class XmlReader{
 	}
 
 	public boolean getNodeInfo(Node node, String art , String tit){
-		
-		/* ノードの種類を出力 */
-		//System.out.println(node.getNodeType());
-		//tabbing();
-		/* ノード名を出力 */
-		if(node.getNodeName() != null &&  !node.getNodeName().equals("#text")  ){		
-			if(node.getAttributes() != null && node.getAttributes().getNamedItem("id") != null && node.getNodeName().equals("track") && node.getNodeName().equals("track") ){
-				System.out.println(node.getAttributes().getNamedItem("id").getNodeValue() + " <------ track id");
-				trackid = node.getAttributes().getNamedItem("id").getNodeValue();
-			}else{
-			}
-		}
-	
-		if(node.getParentNode().getNodeName().equals("title") && node.getParentNode().getParentNode().getNodeName().equals("track")){
 
-			if(node.getNodeValue() != null){
-				//tabbing();
-				if(!node.getNodeValue().equals(tit))
-					trackid = null;
-				System.out.println(node.getNodeValue() + " <------- title " + trackid);
-			}
-		}else if(node.getParentNode().getNodeName().equals("name") && node.getParentNode().getParentNode().getNodeName().equals("artist")
-				 &&  node.getParentNode().getParentNode().getParentNode().getNodeName().equals("track")){
-
-			if(node.getNodeValue() != null){
-				
-				System.out.println(node.getNodeValue() + " <------- artist" + trackid);
-				if(!node.getNodeValue().equals(art) ){
-					trackid = null;
-					return false;
-				}else{
-					System.out.println("完全一致 " + art + " " + tit + " " + trackid);
-					return true;
-				}
-			
-			}
-		}else{
-			if(node.getNodeValue() != null){
-				//tabbing();
-				//System.out.println(node.getNodeValue());
-			}
+		if(node.getNodeName().equals("track") &&
+		   node.getChildNodes().item(2).getChildNodes().item(0).getFirstChild().getNodeValue().equals(art) &&
+		   node.getChildNodes().item(0).getFirstChild().getNodeValue().equals(tit)){
+			System.out.println("id = " + node.getAttributes().getNamedItem("id").getNodeValue());
+			System.out.println("art= " + node.getChildNodes().item(2).getChildNodes().item(0).getFirstChild().getNodeValue());
+			System.out.println("tit= " + node.getChildNodes().item(0).getFirstChild().getNodeValue());
+			System.out.println("完全一致 ");
+			trackid = node.getAttributes().getNamedItem("id").getNodeValue();
+			return true;
 		}
-		
+
 		return false;
-		
+
 	}
 
 	/* 全ノードを探索 */
 	public String walkThrough(String art , String tit){
-//		String trackID = null;
-		
-		Node root=doc.getDocumentElement();
-		recursiveWalk(root , art , tit);
-		
-		return trackid;
+		//		String trackID = null;
+
+		if(doc != null){
+			Node root=doc.getDocumentElement();
+			recursiveWalk(root , art , tit);
+			return trackid;
+		}else{
+			return null;
+		}
 	}
 
 	private void recursiveWalk(Node node , String art , String tit){
