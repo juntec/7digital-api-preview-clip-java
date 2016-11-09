@@ -50,7 +50,6 @@ public class Main {
 		String shopid = "496";
 		String country = "ww";
 				
-		
 		prn("-------------------------");
 		//############################################
 		//7digital track search でtrack IDの検索
