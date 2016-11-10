@@ -1,0 +1,6 @@
+
+public class tes {
+
+	
+	//tes
+}
